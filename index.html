@@ -111,6 +111,22 @@
       box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, .7);
     }
 
+    @keyframes avFloat {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+
+    .av-float {
+      animation: avFloat 3s ease-in-out infinite;
+    }
+
     .glass-sm {
       background: rgba(255, 255, 255, .55);
       backdrop-filter: blur(12px);
@@ -2473,461 +2489,50 @@
     }
   </style>
 </head>
+<!-- Global Claymorphism SVG Library -->
+<svg style="position:fixed;width:0;height:0;overflow:hidden;" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="clay-3d" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2.5" result="blur" />
+      <feOffset dx="0" dy="4" result="offsetBlur" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.35" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="offsetBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <radialGradient id="cl-cat" cx="35%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#fdbaed" />
+      <stop offset="100%" stop-color="#f472b6" />
+    </radialGradient>
+    <radialGradient id="cl-bear" cx="35%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#fef3c7" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </radialGradient>
+    <radialGradient id="cl-bunny" cx="35%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#e0f2fe" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </radialGradient>
+    <radialGradient id="cl-eye" cx="30%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#555" />
+      <stop offset="100%" stop-color="#111" />
+    </radialGradient>
+    <linearGradient id="cl-inner" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(0,0,0,0.06)" />
+      <stop offset="100%" stop-color="rgba(0,0,0,0.18)" />
+    </linearGradient>
+    <radialGradient id="cl-glass" cx="30%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="white" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+</svg>
 
 <body>
 
-  <!-- ══════════════ SPLASH HOLOGRÁFICO ══════════════ -->
-  <div id="splash" style="display:none">
-    <style>
-      #splash {
-        position: fixed;
-        inset: 0;
-        z-index: 500;
-        background: linear-gradient(160deg, #f0e8ff 0%, #fce8f6 30%, #e8f4ff 60%, #edfff5 100%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-      }
 
-      /* Partículas de fondo */
-      .sp-bg {
-        position: absolute;
-        inset: 0;
-        pointer-events: none
-      }
-
-      .sp-orb {
-        position: absolute;
-        border-radius: 50%;
-        filter: blur(60px);
-        opacity: .35;
-        animation: orbFloat 6s ease-in-out infinite;
-      }
-
-      .sp-orb1 {
-        width: 280px;
-        height: 280px;
-        background: radial-gradient(circle, #f9a8c9, #c4b5fd);
-        top: -80px;
-        left: -60px;
-        animation-delay: 0s
-      }
-
-      .sp-orb2 {
-        width: 220px;
-        height: 220px;
-        background: radial-gradient(circle, #7dd3fc, #a5f3fc);
-        bottom: -60px;
-        right: -40px;
-        animation-delay: -2s
-      }
-
-      .sp-orb3 {
-        width: 180px;
-        height: 180px;
-        background: radial-gradient(circle, #86efac, #fbcfe8);
-        top: 40%;
-        left: 60%;
-        animation-delay: -4s
-      }
-
-      @keyframes orbFloat {
-
-        0%,
-        100% {
-          transform: translateY(0) scale(1)
-        }
-
-        50% {
-          transform: translateY(-20px) scale(1.05)
-        }
-      }
-
-      /* Destellos */
-      .sparkle {
-        position: absolute;
-        pointer-events: none;
-        animation: spkl 2s ease-in-out infinite;
-      }
-
-      @keyframes spkl {
-
-        0%,
-        100% {
-          opacity: 0;
-          transform: scale(0) rotate(0deg)
-        }
-
-        50% {
-          opacity: 1;
-          transform: scale(1) rotate(180deg)
-        }
-      }
-
-      .sparkle svg {
-        width: 16px;
-        height: 16px
-      }
-
-      /* Tarjeta holográfica central */
-      .holo-card {
-        position: relative;
-        width: calc(100% - 48px);
-        max-width: 340px;
-        background: rgba(255, 255, 255, .45);
-        backdrop-filter: blur(28px) saturate(200%);
-        -webkit-backdrop-filter: blur(28px) saturate(200%);
-        border-radius: 32px;
-        border: 1.5px solid rgba(255, 255, 255, .8);
-        box-shadow:
-          0 20px 60px rgba(200, 150, 220, .2),
-          0 0 0 1px rgba(255, 255, 255, .4) inset,
-          0 1px 0 rgba(255, 255, 255, .9) inset;
-        padding: 36px 28px 32px;
-        text-align: center;
-        z-index: 2;
-        animation: cardIn .8s cubic-bezier(.34, 1.56, .64, 1) forwards;
-        overflow: visible;
-      }
-
-      @keyframes cardIn {
-        from {
-          opacity: 0;
-          transform: translateY(30px) scale(.9)
-        }
-
-        to {
-          opacity: 1;
-          transform: translateY(0) scale(1)
-        }
-      }
-
-      /* Reflejo holográfico en la tarjeta */
-      .holo-card::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: 32px;
-        background: linear-gradient(135deg,
-            rgba(255, 200, 220, .15) 0%,
-            rgba(200, 220, 255, .1) 25%,
-            rgba(200, 255, 220, .1) 50%,
-            rgba(255, 220, 200, .1) 75%,
-            rgba(220, 200, 255, .15) 100%);
-        animation: holoShift 4s ease-in-out infinite;
-        pointer-events: none;
-      }
-
-      @keyframes holoShift {
-
-        0%,
-        100% {
-          background: linear-gradient(135deg, rgba(255, 200, 220, .2) 0%, rgba(200, 220, 255, .1) 50%, rgba(200, 255, 220, .15) 100%)
-        }
-
-        33% {
-          background: linear-gradient(225deg, rgba(200, 220, 255, .2) 0%, rgba(200, 255, 220, .1) 50%, rgba(255, 200, 220, .15) 100%)
-        }
-
-        66% {
-          background: linear-gradient(315deg, rgba(200, 255, 220, .2) 0%, rgba(255, 200, 220, .1) 50%, rgba(200, 220, 255, .15) 100%)
-        }
-      }
-
-      /* Pills holográficas decorativas */
-      .holo-pills {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin: 20px 0 24px;
-      }
-
-      .holo-pill {
-        border-radius: 50px;
-        height: 52px;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, .08), 0 0 0 1px rgba(255, 255, 255, .6) inset;
-        animation: pillPulse 3s ease-in-out infinite;
-      }
-
-      .holo-pill:nth-child(1) {
-        background: linear-gradient(135deg, #ffb3c6, #ff8fab);
-        animation-delay: 0s;
-      }
-
-      .holo-pill:nth-child(2) {
-        background: linear-gradient(135deg, #ffc8dd, #ffafcc);
-        animation-delay: .3s;
-      }
-
-      .holo-pill:nth-child(3) {
-        background: linear-gradient(135deg, #bde0fe, #a2d2ff);
-        animation-delay: .6s;
-        border-radius: 50%;
-      }
-
-      .holo-pill:nth-child(4) {
-        background: linear-gradient(135deg, #cdb4db, #b5838d);
-        animation-delay: .9s;
-        border-radius: 50%;
-      }
-
-      .holo-pill::after {
-        content: '';
-        position: absolute;
-        top: 20%;
-        left: 15%;
-        width: 30%;
-        height: 25%;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, .5);
-        filter: blur(3px);
-      }
-
-      @keyframes pillPulse {
-
-        0%,
-        100% {
-          transform: scale(1)
-        }
-
-        50% {
-          transform: scale(1.03)
-        }
-      }
-
-      /* Título */
-      .holo-title {
-        font-family: 'Playfair Display', serif;
-        font-size: 2rem;
-        font-weight: 700;
-        line-height: 1.15;
-        background: linear-gradient(135deg, #be185d, #9333ea, #0369a1);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 4px;
-        animation: titleIn 1s .3s both;
-      }
-
-      @keyframes titleIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px)
-        }
-
-        to {
-          opacity: 1;
-          transform: translateY(0)
-        }
-      }
-
-      .holo-sub {
-        font-size: .85rem;
-        color: #9d7a8a;
-        font-style: italic;
-        margin-bottom: 0;
-        animation: titleIn 1s .5s both;
-      }
-
-      /* Badge */
-      .holo-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: rgba(255, 255, 255, .7);
-        border-radius: 50px;
-        padding: 6px 16px;
-        font-size: .78rem;
-        font-weight: 700;
-        color: #be185d;
-        border: 1px solid rgba(255, 255, 255, .8);
-        margin-top: 16px;
-        box-shadow: 0 2px 12px rgba(190, 24, 93, .12);
-        animation: titleIn 1s .7s both;
-      }
-
-      /* ══ MASCOTAS KAWAII SVG ══ */
-      .mascot {
-        position: absolute;
-        z-index: 3;
-        animation: mascotFloat 3s ease-in-out infinite;
-        filter: drop-shadow(0 8px 20px rgba(0, 0, 0, .15));
-      }
-
-      @keyframes mascotFloat {
-
-        0%,
-        100% {
-          transform: translateY(0) rotate(-2deg)
-        }
-
-        50% {
-          transform: translateY(-12px) rotate(2deg)
-        }
-      }
-
-      /* Gatito — arriba izquierda */
-      .mascot-cat {
-        top: 6%;
-        left: 2%;
-        animation-delay: 0s;
-        width: 95px
-      }
-
-      /* Perrito — arriba derecha */
-      .mascot-dog {
-        top: 4%;
-        right: 0%;
-        animation-delay: -1.2s;
-        width: 88px
-      }
-
-      /* Flor — abajo derecha */
-      .mascot-flower {
-        bottom: 14%;
-        right: 2%;
-        animation-delay: -2.1s;
-        width: 82px
-      }
-
-      /* Botón */
-      .holo-btn {
-        width: 100%;
-        padding: 15px;
-        background: linear-gradient(135deg, #f472b6, #fb7185, #f472b6);
-        background-size: 200% auto;
-        border: none;
-        border-radius: 18px;
-        color: #fff;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 1rem;
-        font-weight: 700;
-        cursor: pointer;
-        margin-top: 20px;
-        box-shadow: 0 6px 24px rgba(244, 114, 182, .4);
-        transition: all .3s;
-        animation: titleIn 1s .9s both, btnGrad 3s linear infinite;
-        position: relative;
-        overflow: hidden;
-      }
-
-      @keyframes btnGrad {
-        0% {
-          background-position: 0% center
-        }
-
-        100% {
-          background-position: 200% center
-        }
-      }
-
-      .holo-btn::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 60%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .3), transparent);
-        animation: btnShine 2.5s ease-in-out infinite;
-      }
-
-      @keyframes btnShine {
-        0% {
-          left: -100%
-        }
-
-        100% {
-          left: 200%
-        }
-      }
-
-      .holo-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 32px rgba(244, 114, 182, .5)
-      }
-    </style>
-
-    <!-- Fondo orbes -->
-    <div class="sp-bg">
-      <div class="sp-orb sp-orb1"></div>
-      <div class="sp-orb sp-orb2"></div>
-      <div class="sp-orb sp-orb3"></div>
-      <!-- Destellos -->
-      <div class="sparkle" style="top:15%;left:20%;animation-delay:.5s"><svg viewBox="0 0 24 24">
-          <path
-            d="M12 2L13.09 8.26L19 6L14.74 10.91L21 12L14.74 13.09L19 19L13.09 14.74L12 21L10.91 14.74L5 19L9.26 13.09L3 12L9.26 10.91L5 6L10.91 8.26Z"
-            fill="#f9a8c9" />
-        </svg></div>
-      <div class="sparkle" style="top:70%;left:75%;animation-delay:1.2s"><svg viewBox="0 0 24 24">
-          <path
-            d="M12 2L13.09 8.26L19 6L14.74 10.91L21 12L14.74 13.09L19 19L13.09 14.74L12 21L10.91 14.74L5 19L9.26 13.09L3 12L9.26 10.91L5 6L10.91 8.26Z"
-            fill="#7dd3fc" />
-        </svg></div>
-      <div class="sparkle" style="top:45%;left:88%;animation-delay:.8s"><svg viewBox="0 0 24 24">
-          <path
-            d="M12 2L13.09 8.26L19 6L14.74 10.91L21 12L14.74 13.09L19 19L13.09 14.74L12 21L10.91 14.74L5 19L9.26 13.09L3 12L9.26 10.91L5 6L10.91 8.26Z"
-            fill="#86efac" />
-        </svg></div>
-      <div class="sparkle" style="top:85%;left:15%;animation-delay:1.8s"><svg viewBox="0 0 24 24">
-          <path
-            d="M12 2L13.09 8.26L19 6L14.74 10.91L21 12L14.74 13.09L19 19L13.09 14.74L12 21L10.91 14.74L5 19L9.26 13.09L3 12L9.26 10.91L5 6L10.91 8.26Z"
-            fill="#c4b5fd" />
-        </svg></div>
-      <div class="sparkle" style="top:25%;left:92%;animation-delay:2.3s;"><svg viewBox="0 0 24 24"
-          style="width:10px;height:10px">
-          <path
-            d="M12 2L13.09 8.26L19 6L14.74 10.91L21 12L14.74 13.09L19 19L13.09 14.74L12 21L10.91 14.74L5 19L9.26 13.09L3 12L9.26 10.91L5 6L10.91 8.26Z"
-            fill="#fda4af" />
-        </svg></div>
-    </div>
-
-    <!-- MASCOTA GATITO (arriba izquierda) -->
-    <svg class="mascot mascot-cat" viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="catBody" cx="40%" cy="35%">
-          <stop offset="0%" stop-color="#ffe4f0" />
-          <stop offset="100%" stop-color="#f9a8c9" />
-        </radialGradient>
-        <radialGradient id="catFace" cx="40%" cy="30%">
-          <stop offset="0%" stop-color="#fff0f7" />
-          <stop offset="100%" stop-color="#fce7f3" />
-        </radialGradient>
-      </defs>
-      <!-- Cuerpo -->
-      <!-- MASCOTAS FLOTANTES DEL SPLASH (Se inyectan con JS) -->
-      <div class="mascot mascot-cat" id="splash-cat"></div>
-      <div class="mascot mascot-dog" id="splash-bear"></div> <!-- Reemplaza perro con oso -->
-      <div class="mascot mascot-flower" id="splash-bunny"></div> <!-- Reemplaza flor con conejo -->
-
-      <!-- Tarjeta holográfica -->
-      <div class="holo-card">
-        <div
-          style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;background:linear-gradient(135deg,#be185d,#9333ea,#0369a1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:4px">
-          Milagrito
-        </div>
-        <div style="font-size:.82rem;color:#9d7a8a;font-style:italic;margin-bottom:16px">
-          Tu compañera en este hermoso viaje
-        </div>
-        <!-- Pills holográficas -->
-        <div class="holo-pills">
-          <div class="holo-pill"></div>
-          <div class="holo-pill"></div>
-          <div class="holo-pill"></div>
-          <div class="holo-pill"></div>
-        </div>
-        <div style="font-size:.78rem;color:#be185d;font-weight:600;margin-bottom:4px">
-          🌸 Cuidado · Amor · Acompañamiento
-        </div>
-        <button class="holo-btn" onclick="closeSplash()">
-          Comenzar mi viaje ✨
-        </button>
-      </div>
-  </div>
 
   <!-- ══════════════ ONBOARDING ══════════════ -->
   <div id="onboarding">
@@ -3339,7 +2944,8 @@
 
         <div class="settings-s-title">🎨 Tema de la App</div>
         <div class="card glass" style="padding:16px">
-          <p style="font-size:.8rem;color:var(--text2);margin-bottom:10px">Cambia el color de Milagrito cuando quieras.
+          <p style="font-size:.8rem;color:var(--text2);margin-bottom:10px">Cambia el color de Milagrito cuando
+            quieras.
             ¡Incluso si el médico se equivocó! 😄</p>
           <div class="theme-grid">
             <button class="tg-btn rosa" id="tg-rosa" onclick="changeTheme('rosa')">
@@ -4375,211 +3981,72 @@
       navigator.serviceWorker.register(URL.createObjectURL(b)).catch(() => { });
     }
 
-    // ══════════════════════════════════════════
-    //  SPLASH
-    // ══════════════════════════════════════════
-    function closeSplash() {
-      const s = document.getElementById('splash');
-      s.style.transition = 'opacity .65s ease, transform .65s ease';
-      s.style.opacity = '0';
-      s.style.transform = 'scale(1.04)';
-      setTimeout(() => { s.style.display = 'none'; }, 650);
-    }
 
-    // Update avatar on splash based on chosen avatar
-    function updateSplashAvatars() {
-      // Inyectar mascotas en el splash
-      document.getElementById('splash-cat').innerHTML = getAvatarSVG('cat', 100);
-      document.getElementById('splash-bear').innerHTML = getAvatarSVG('bear', 100);
-      document.getElementById('splash-bunny').innerHTML = getAvatarSVG('bunny', 100);
 
-      // Inyectar botones en el onboarding
-      const btnCat = document.getElementById('btn-av-cat');
-      const btnBear = document.getElementById('btn-av-bear');
-      const btnBunny = document.getElementById('btn-av-bunny');
 
-      if (btnCat) btnCat.innerHTML = getAvatarSVG('cat', 56);
-      if (btnBear) btnBear.innerHTML = getAvatarSVG('bear', 56);
-      if (btnBunny) btnBunny.innerHTML = getAvatarSVG('bunny', 56);
-    }
-
-    // ══════════════════════════════════════════
-    //  INIT
-    // ══════════════════════════════════════════
-    createManifest(); registerSW(); loadRecs();
-    // Ejecutar render de avatares inmediatamente
-    updateSplashAvatars();
     // ══════════════════════════════════════════
     //  CLAYMORPHISM AVATARS (3D KAWAI)
     // ══════════════════════════════════════════
     function getAvatarSVG(type, size = 64) {
-      // Common defs for clay look (gradients, shadows)
-      const defs = `
-        <defs>
-          <filter id="clay-shadow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur"/>
-            <feOffset dx="0" dy="3" result="offsetBlur"/>
-            <feComponentTransfer>
-              <feFuncA type="linear" slope="0.3"/>
-            </feComponentTransfer>
-            <feMerge>
-              <feMergeNode in="offsetBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-          <radialGradient id="grad-body-cat" cx="30%" cy="30%" r="80%">
-            <stop offset="0%" stop-color="#fbcfe8"/>
-            <stop offset="100%" stop-color="#f472b6"/>
-          </radialGradient>
-          <radialGradient id="grad-body-bear" cx="30%" cy="30%" r="80%">
-            <stop offset="0%" stop-color="#fef3c7"/>
-            <stop offset="100%" stop-color="#f59e0b"/>
-          </radialGradient>
-          <radialGradient id="grad-body-bunny" cx="30%" cy="30%" r="80%">
-            <stop offset="0%" stop-color="#e0f2fe"/>
-            <stop offset="100%" stop-color="#38bdf8"/>
-          </radialGradient>
-          <radialGradient id="grad-eye" cx="30%" cy="30%" r="80%">
-            <stop offset="0%" stop-color="#555"/>
-            <stop offset="100%" stop-color="#222"/>
-          </radialGradient>
-          <linearGradient id="grad-ear-in" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="rgba(0,0,0,0.05)"/>
-            <stop offset="100%" stop-color="rgba(0,0,0,0.15)"/>
-          </linearGradient>
-        </defs>
-      `;
-
+      const cls = "av-float";
       if (type === 'cat') {
-        return `
-        <svg width="${size}" height="${size}" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          ${defs}
-          <g filter="url(#clay-shadow)">
-            <!-- Ears -->
-            <path d="M20 30L30 10L45 25" fill="url(#grad-body-cat)" stroke="#fdf2f8" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M80 30L70 10L55 25" fill="url(#grad-body-cat)" stroke="#fdf2f8" stroke-width="2" stroke-linejoin="round"/>
-            <!-- Body Head -->
-            <rect x="15" y="25" width="70" height="60" rx="25" fill="url(#grad-body-cat)"/>
-            <!-- Inner Ears -->
-            <path d="M26 28L30 16L38 26" fill="url(#grad-ear-in)"/>
-            <path d="M74 28L70 16L62 26" fill="url(#grad-ear-in)"/>
-            <!-- Highlight -->
-            <ellipse cx="35" cy="35" rx="10" ry="6" fill="white" opacity="0.4" transform="rotate(-15 35 35)"/>
-            <!-- Eyes -->
-            <circle cx="35" cy="55" r="5" fill="#374151"/>
-            <circle cx="65" cy="55" r="5" fill="#374151"/>
-            <circle cx="37" cy="53" r="1.5" fill="white"/>
-            <circle cx="67" cy="53" r="1.5" fill="white"/>
-            <!-- Mouth -->
-            <path d="M45 62 Q50 66 55 62" stroke="#be185d" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-            <!-- Cheeks -->
-            <circle cx="28" cy="62" r="4" fill="#fce7f3" opacity="0.6"/>
-            <circle cx="72" cy="62" r="4" fill="#fce7f3" opacity="0.6"/>
-          </g>
-        </svg>`;
+        return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" class="${cls}">
+          <g filter="url(#clay-3d)">
+            <path d="M20 30L35 15L48 28" fill="url(#cl-cat)" stroke="#fff" stroke-width="1.5"/><path d="M80 30L65 15L52 28" fill="url(#cl-cat)" stroke="#fff" stroke-width="1.5"/>
+            <rect x="15" y="25" width="70" height="60" rx="28" fill="url(#cl-cat)"/>
+            <path d="M26 28L32 20L38 26" fill="url(#cl-inner)"/><path d="M74 28L68 20L62 26" fill="url(#cl-inner)"/>
+            <ellipse cx="33" cy="38" rx="12" ry="7" fill="url(#cl-glass)" transform="rotate(-15 33 38)"/>
+            <circle cx="35" cy="55" r="5" fill="#374151"/><circle cx="65" cy="55" r="5" fill="#374151"/>
+            <circle cx="37" cy="53" r="1.5" fill="#fff"/><circle cx="67" cy="53" r="1.5" fill="#fff"/>
+            <path d="M44 65 Q50 70 56 65" stroke="#be185d" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <circle cx="28" cy="62" r="5" fill="#fce7f3" opacity="0.6"/><circle cx="72" cy="62" r="5" fill="#fce7f3" opacity="0.6"/>
+          </g></svg>`;
       }
-
       if (type === 'bear') {
-        return `
-        <svg width="${size}" height="${size}" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          ${defs}
-          <g filter="url(#clay-shadow)">
-            <!-- Ears -->
-            <circle cx="25" cy="30" r="12" fill="url(#grad-body-bear)"/>
-            <circle cx="75" cy="30" r="12" fill="url(#grad-body-bear)"/>
-            <circle cx="25" cy="30" r="6" fill="url(#grad-ear-in)"/>
-            <circle cx="75" cy="30" r="6" fill="url(#grad-ear-in)"/>
-            <!-- Head -->
-            <circle cx="50" cy="55" r="38" fill="url(#grad-body-bear)"/>
-            <!-- Highlight -->
-            <ellipse cx="35" cy="40" rx="12" ry="8" fill="white" opacity="0.4" transform="rotate(-15 35 40)"/>
-            <!-- Snout -->
-            <ellipse cx="50" cy="62" rx="14" ry="10" fill="#fffbeb"/>
-            <ellipse cx="50" cy="58" rx="5" ry="3.5" fill="#451a03"/>
-            <!-- Eyes -->
-            <circle cx="35" cy="50" r="4.5" fill="#451a03"/>
-            <circle cx="65" cy="50" r="4.5" fill="#451a03"/>
-            <circle cx="37" cy="48" r="1.5" fill="white"/>
-            <circle cx="67" cy="48" r="1.5" fill="white"/>
-          </g>
-        </svg>`;
+        return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" class="${cls}">
+          <g filter="url(#clay-3d)">
+            <circle cx="25" cy="30" r="14" fill="url(#cl-bear)"/><circle cx="75" cy="30" r="14" fill="url(#cl-bear)"/>
+            <circle cx="25" cy="30" r="7" fill="url(#cl-inner)"/><circle cx="75" cy="30" r="7" fill="url(#cl-inner)"/>
+            <circle cx="50" cy="58" r="38" fill="url(#cl-bear)"/>
+            <ellipse cx="35" cy="42" rx="14" ry="9" fill="url(#cl-glass)" transform="rotate(-15 35 42)"/>
+            <ellipse cx="50" cy="65" rx="15" ry="11" fill="#fffbeb"/>
+            <ellipse cx="50" cy="61" rx="6" ry="4" fill="#451a03"/>
+            <circle cx="35" cy="52" r="5" fill="#451a03"/><circle cx="65" cy="52" r="5" fill="#451a03"/>
+            <circle cx="37" cy="50" r="1.5" fill="#fff"/><circle cx="67" cy="50" r="1.5" fill="#fff"/>
+          </g></svg>`;
       }
-
-      // Bunny (Default)
-      return `
-      <svg width="${size}" height="${size}" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        ${defs}
-        <g filter="url(#clay-shadow)">
-          <!-- Ears -->
-          <path d="M30 40 C20 10 40 5 45 35" fill="url(#grad-body-bunny)" stroke="#e0f2fe" stroke-width="1"/>
-          <path d="M70 40 C80 10 60 5 55 35" fill="url(#grad-body-bunny)" stroke="#e0f2fe" stroke-width="1"/>
-          <path d="M33 35 C28 15 38 12 42 32" fill="url(#grad-ear-in)"/>
-          <path d="M67 35 C72 15 62 12 58 32" fill="url(#grad-ear-in)"/>
-          <!-- Head -->
-          <circle cx="50" cy="55" r="35" fill="url(#grad-body-bunny)"/>
-          <!-- Highlight -->
-          <ellipse cx="35" cy="40" rx="10" ry="6" fill="white" opacity="0.5" transform="rotate(-15 35 40)"/>
-          <!-- Eyes -->
-          <circle cx="38" cy="55" r="4.5" fill="#0f172a"/>
-          <circle cx="62" cy="55" r="4.5" fill="#0f172a"/>
-          <circle cx="40" cy="53" r="1.5" fill="white"/>
-          <circle cx="64" cy="53" r="1.5" fill="white"/>
-          <!-- Snout -->
-          <path d="M46 62 Q50 66 54 62" stroke="#0f172a" stroke-width="2" stroke-linecap="round" fill="none"/>
-          <!-- Cheeks -->
-          <circle cx="30" cy="60" r="5" fill="#fce7f3" opacity="0.6"/>
-          <circle cx="70" cy="60" r="5" fill="#fce7f3" opacity="0.6"/>
-        </g>
-      </svg>`;
+      return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" class="${cls}">
+        <g filter="url(#clay-3d)">
+          <path d="M30 40 C15 5 40 5 45 35" fill="url(#cl-bunny)" stroke="#fff" stroke-width="0.5"/><path d="M70 40 C85 5 60 5 55 35" fill="url(#cl-bunny)" stroke="#fff" stroke-width="0.5"/>
+          <path d="M33 35 C28 15 38 12 42 32" fill="url(#cl-inner)"/><path d="M67 35 C72 15 62 12 58 32" fill="url(#cl-inner)"/>
+          <circle cx="50" cy="58" r="36" fill="url(#cl-bunny)"/>
+          <ellipse cx="35" cy="42" rx="12" ry="7" fill="url(#cl-glass)" transform="rotate(-15 35 42)"/>
+          <circle cx="37" cy="55" r="5" fill="#0f172a"/><circle cx="63" cy="55" r="5" fill="#0f172a"/>
+          <circle cx="39" cy="53" r="1.5" fill="#fff"/><circle cx="65" cy="53" r="1.5" fill="#fff"/>
+          <path d="M45 65 Q50 70 55 65" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <circle cx="30" cy="62" r="6" fill="#fce7f3" opacity="0.6"/><circle cx="70" cy="62" r="6" fill="#fce7f3" opacity="0.6"/>
+        </g></svg>`;
     }
 
     function initAvatars() {
-      // Inyectar mascotas en el splash
-      const sc = document.getElementById('splash-cat');
-      const sb = document.getElementById('splash-bear');
-      const sbu = document.getElementById('splash-bunny');
-      if (sc) sc.innerHTML = getAvatarSVG('cat', 100);
-      if (sb) sb.innerHTML = getAvatarSVG('bear', 100);
-      if (sbu) sbu.innerHTML = getAvatarSVG('bunny', 100);
-
-      // Inyectar botones en el onboarding
-      const btnCat = document.getElementById('btn-av-cat');
-      const btnBear = document.getElementById('btn-av-bear');
-      const btnBunny = document.getElementById('btn-av-bunny');
-      if (btnCat) btnCat.innerHTML = getAvatarSVG('cat', 56);
-      if (btnBear) btnBear.innerHTML = getAvatarSVG('bear', 56);
-      if (btnBunny) btnBunny.innerHTML = getAvatarSVG('bunny', 56);
-
-      // Inyectar botones en Settings
-      const setCat = document.getElementById('ag-cat');
-      const setBear = document.getElementById('ag-bear');
-      const setBunny = document.getElementById('ag-bunny');
-      if (setCat) setCat.innerHTML = getAvatarSVG('cat', 52);
-      if (setBear) setBear.innerHTML = getAvatarSVG('bear', 52);
-      if (setBunny) setBunny.innerHTML = getAvatarSVG('bunny', 52);
+      // Onboarding
+      const bc = document.getElementById('btn-av-cat'), bb = document.getElementById('btn-av-bear'), bn = document.getElementById('btn-av-bunny');
+      if (bc) bc.innerHTML = getAvatarSVG('cat', 58); if (bb) bb.innerHTML = getAvatarSVG('bear', 58); if (bn) bn.innerHTML = getAvatarSVG('bunny', 58);
+      // Settings
+      const sc = document.getElementById('ag-cat'), sb = document.getElementById('ag-bear'), sn = document.getElementById('ag-bunny');
+      if (sc) sc.innerHTML = getAvatarSVG('cat', 52); if (sb) sb.innerHTML = getAvatarSVG('bear', 52); if (sn) sn.innerHTML = getAvatarSVG('bunny', 52);
     }
 
     // ══════════════════════════════════════════
     //  INIT
     // ══════════════════════════════════════════
     createManifest(); registerSW(); loadRecs();
-    initAvatars(); // Init avatars visuals
+    initAvatars();
 
-    const splashEl = document.getElementById('splash');
     if (load() && S.name) {
-      splashEl.style.display = 'flex';
-      const splashBtn = splashEl.querySelector('.holo-btn');
-      if (splashBtn) splashBtn.textContent = `¡Hola de nuevo, ${S.name}! 💕`;
       boot();
     } else {
-      splashEl.style.display = 'flex';
-      const splashBtn = splashEl.querySelector('.holo-btn');
-      if (splashBtn) splashBtn.onclick = () => {
-        closeSplash();
-        setTimeout(() => {
-          document.getElementById('onboarding').style.display = 'flex';
-        }, 400);
-      };
+      document.getElementById('onboarding').style.display = 'flex';
     }
   </script>
 </body>
